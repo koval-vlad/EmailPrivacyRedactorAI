@@ -21,7 +21,7 @@ This section contains sensitive credentials for the developer sandbox. Ensure th
 
     Developer Password:  K9#vP!q2_Zz9
 
-    Primary API Key: example_key_8823_mvt
+    Primary API Key: example_key
 
 3. Billing & Financial Compliance
 
