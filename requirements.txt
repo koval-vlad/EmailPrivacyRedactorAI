@@ -1,4 +1,4 @@
 reflex==0.8.24.post1
-httpx
-pillow
-python-dotenv
+httpx==0.28.1
+pillow==12.1.0
+python-dotenv==1.2.1
