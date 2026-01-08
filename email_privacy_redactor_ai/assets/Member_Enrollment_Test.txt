@@ -19,7 +19,7 @@ Access to the digital health portal requires the following unique identifiers.
 
     Important: Your temporary Password (Secure!Health99) and Token (auth_9k_22_v44_temp) will expire within 24 hours of document issuance.
 
-    System API Key: live_pk_8823_mvt_001
+    System API Key: example_key_8823_mvt_001
 
     Contact Phone: +1 (512) 555-0192
 
