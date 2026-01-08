@@ -21,6 +21,8 @@ This section contains sensitive credentials for the developer sandbox. Ensure th
 
     Developer Password:  K9#vP!q2_Zz9
 
+    Primary API Key: api_key_example_4eC39HqLyjWDarjtT1zdp7dc
+
 3. Billing & Financial Compliance
 
 A pre-authorization Amount has been held to verify the Account status. Under federal guidelines, the last four digits of the SSN were used for credit validation.
