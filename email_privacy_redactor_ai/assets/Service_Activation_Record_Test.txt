@@ -1,0 +1,44 @@
+Service Activation Record
+
+Document Ref: LOG-992-BETA Status: PROVISIONING IN PROGRESS
+1. Primary Subscriber Details
+
+The following identity information was captured during the initial portal registration. Please verify the Name matches the government ID provided in the physical scan.
+
+    Subscriber Name: Jonathan B. Sterling
+
+    Residential Address: 742 Evergreen Terrace, Springfield, IL 62704
+
+    Government ID: DL-IL-9882341
+
+    Contact Phone: +1 (555) 010-8899
+
+2. Security & API Authentication
+
+This section contains sensitive credentials for the developer sandbox. Ensure the Passwd is rotated every 90 days. The Token below is a temporary JWT for the initial handshake.
+
+    Authentication Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvbmF0aGFuIFN0ZXJsaW5nIiwiaWF0IjoxNTE2MjM5MDIyfQ
+
+    Developer Password:  K9#vP!q2_Zz9
+
+    Primary API Key: sk_test_4eC39HqLyjWDarjtT1zdp7dc
+
+3. Billing & Financial Compliance
+
+A pre-authorization Amount has been held to verify the Account status. Under federal guidelines, the last four digits of the SSN were used for credit validation.
+
+    Financial Account Number: 004882190332
+
+    Total Authorized Amount: $1,240.50
+
+    Social Security Number: XXX-XX-4412
+
+    Primary Credit Card: **** **** **** 5521
+
+4. System Metadata
+
+    Notification Email: j.sterling.test@example.com
+
+    Provisioning Node: US-EAST-1
+
+    Service Tier: Enterprise-API-Standard

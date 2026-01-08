@@ -1,0 +1,607 @@
+import reflex as rx
+from email_privacy_redactor_ai.email_privacy_redactor_ai import EmailPrivacyRedactorAI
+from email_privacy_redactor_ai.components.ui.checkbox_input import checkbox_input
+from email_privacy_redactor_ai.components.ui.auto_clear_page_button import auto_clear_page_button
+
+def email_compose_page() -> rx.Component:
+    """Main compose screen"""
+    return rx.fragment(
+        auto_clear_page_button(
+            on_clear=EmailPrivacyRedactorAI.handle_new_email,
+            has_original_data_condition=(EmailPrivacyRedactorAI.original_content != "") | (EmailPrivacyRedactorAI.original_to != ""),
+        ),
+        rx.box(
+            rx.container(
+                rx.vstack(
+                # Header
+                rx.vstack(
+                    rx.hstack(
+                        rx.icon("shield", size=24, color="blue"),
+                        rx.heading("Email Redactor AI", size="3"),
+                        spacing="2",
+                        align="center",
+                    ),
+                    rx.hstack(
+                        rx.text(
+                            "Compose your email and add images if needed. For a quick test use icon menus below: ",
+                            color="gray.600",
+                            size="1",
+                        ),
+                        rx.icon("file-text", size=14),
+                        rx.text(
+                            " - to populate sample content, ",
+                            color="gray.600",
+                            size="1",
+                        ),
+                        rx.icon("image", size=14),
+                        rx.text(
+                            " - to load sample images. Click Preview to automatically redact sensitive information.",
+                            color="gray.600",
+                            size="1",
+                        ),
+                        spacing="1",
+                        align="center",
+                        flex_wrap="wrap",
+                        justify_content="center",
+                        width="100%",
+                    ),
+                    spacing="3",
+                    width="100%",
+                    align="center",
+                ),
+                
+                # Form - Full width layout
+                rx.vstack(
+                    # Top row: To, CC, Subject, and Redact settings
+                    rx.hstack(
+                        rx.vstack(
+                            rx.vstack( 
+                                rx.text("To:", size="2", weight="bold", color="gray.700"),
+                                rx.input(
+                                    placeholder="recipient@example.com, recipient2@example.com",
+                                    value=EmailPrivacyRedactorAI.to_email,
+                                    on_change=EmailPrivacyRedactorAI.set_to_email,
+                                    width="100%",
+                                    border_color=rx.cond(
+                                        EmailPrivacyRedactorAI.to_email_error != "",
+                                        "red.500",
+                                        "gray.300",
+                                    ),
+                                ),
+                                rx.cond(
+                                    EmailPrivacyRedactorAI.to_email_error != "",
+                                    rx.text(
+                                        EmailPrivacyRedactorAI.to_email_error,
+                                        size="2",
+                                        font_weight="bold",
+                                        style={"color": "#dc2626"},
+                                    ),
+                                ),
+                                width="100%",
+                                spacing="1",
+                            ),
+                            rx.vstack(
+                                rx.text("CC: (optional)", size="2", weight="bold", color="gray.700"),
+                                rx.input(
+                                    placeholder="cc@example.com, cc2@example.com",
+                                    value=EmailPrivacyRedactorAI.cc_email,
+                                    on_change=EmailPrivacyRedactorAI.set_cc_email,
+                                    width="100%",
+                                    border_color=rx.cond(
+                                        EmailPrivacyRedactorAI.cc_email_error != "",
+                                        "red.500",
+                                        "gray.300",
+                                    ),
+                                ),
+                                rx.cond(
+                                    EmailPrivacyRedactorAI.cc_email_error != "",
+                                    rx.text(
+                                        EmailPrivacyRedactorAI.cc_email_error,
+                                        size="2",
+                                        font_weight="bold",
+                                        style={"color": "#dc2626"},
+                                    ),
+                                ),
+                                width="100%",
+                                spacing="1",
+                            ),
+                            rx.vstack(
+                                rx.text("Subject:", size="2", weight="bold", color="gray.700"),
+                                rx.input(
+                                    placeholder="Email subject",
+                                    value=EmailPrivacyRedactorAI.subject,
+                                    on_change=EmailPrivacyRedactorAI.set_subject,
+                                    width="100%",
+                                ),
+                                width="100%",
+                                spacing="1",
+                            ),
+                            width="100%",
+                            spacing="4",
+                            flex="2",
+                        ),
+                        rx.box(
+                            rx.vstack(
+                                rx.heading("Redact this information:", size="1", color="blue.900"),
+                                rx.vstack(
+                                    # Row 1
+                                    rx.hstack(
+                                        rx.vstack(
+                                            checkbox_input(
+                                                label="Name:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_name_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_name,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_name_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_name,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="Phone:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_phone_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_phone,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_phone_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_phone,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="SSN:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_ssn_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_ssn,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_ssn_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_ssn,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="API Key:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_key_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_key,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_key_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_key,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="Token:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_token_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_token,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_token_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_token,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="Amount:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_dollar_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_dollar,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_dollar_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_dollar,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            width="100%",
+                                            spacing="1",
+                                            flex="1",
+                                        ),
+                                        rx.vstack(
+                                            checkbox_input(
+                                                label="Email:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_email_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_email,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_email_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_email,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="Address:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_address_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_address,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_address_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_address,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="Card:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_card_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_card,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_card_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_card,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="Passwd:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_password_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_password,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_password_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_password,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="ID:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_id_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_id,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_id_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_id,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            checkbox_input(
+                                                label="Account:",
+                                                checkbox_checked=EmailPrivacyRedactorAI.redact_account_enabled,
+                                                input_value=EmailPrivacyRedactorAI.redact_account,
+                                                on_checkbox_change=EmailPrivacyRedactorAI.set_redact_account_enabled,
+                                                on_input_change=EmailPrivacyRedactorAI.set_redact_account,
+                                                placeholder="",
+                                                disabled=False,
+                                            ),
+                                            width="100%",
+                                            spacing="1",
+                                            flex="1",
+                                        ),
+                                        width="100%",
+                                        spacing="3",
+                                        align="start",
+                                    ),
+                                    spacing="2",
+                                    width="100%",                                    
+                                ),
+                                spacing="3",
+                                width="100%",                                
+                            ),
+                            padding="4",
+                            bg="white",                            
+                            border_radius="6px",
+                            width="100%",
+                            flex="1",                            
+                        ),
+                        width="100%",
+                        spacing="4",
+                        align="start",
+                        flex_wrap="wrap",                        
+                    ),
+                    # Bottom row: Content and AI Feedback - full width
+                    rx.hstack(
+                        rx.vstack(
+                            rx.hstack(
+                                rx.text("Content:", size="2", weight="bold", color="gray.700"),
+                                # Test content menu
+                                rx.menu.root(
+                                    rx.menu.trigger(
+                                        rx.icon_button(
+                                            rx.icon("file-text", size=16),
+                                            variant="ghost",
+                                            size="2",
+                                            color_scheme="gray",
+                                            cursor="pointer",
+                                            title="Load test content",
+                                        ),
+                                    ),
+                                    rx.menu.content(
+                                        rx.foreach(
+                                            EmailPrivacyRedactorAI.available_test_files,
+                                            lambda filename, idx: rx.menu.item(
+                                                filename.replace("_Test.txt", "").replace("_", " "),
+                                                on_click=EmailPrivacyRedactorAI.load_test_file_by_index(idx),
+                                                cursor="pointer",
+                                            ),
+                                        ),
+                                    ),
+                                    on_open_change=EmailPrivacyRedactorAI.handle_test_menu_open_change,
+                                ),
+                                spacing="2",
+                                align="center",
+                            ),
+                            rx.text_area(
+                                placeholder="Type or paste your email content here. Include any sensitive information - it will be automatically redacted in the next step...",
+                                value=EmailPrivacyRedactorAI.content,
+                                on_change=EmailPrivacyRedactorAI.set_content,
+                                height="25rem",
+                                width="100%",
+                                resize="vertical",
+                            ),
+                            width="100%",
+                            spacing="1",
+                            flex="2",
+                        ),
+                        rx.vstack(
+                            rx.text("AI Feedback:", size="2", weight="bold", color="gray.700"),
+                            rx.text_area(
+                                value=EmailPrivacyRedactorAI.ai_feedback,
+                                placeholder="AI feedback will appear here after redaction...",
+                                height="25rem",
+                                width="100%",
+                                read_only=True,
+                                bg="gray.50",
+                                overflow_y="auto",
+                                font_family="monospace",
+                                font_size="0.875rem",
+                            ),
+                            width="100%",
+                            spacing="1",
+                            flex="1",
+                        ),
+                        width="100%",
+                        spacing="4",
+                        align="start",
+                        flex_wrap="wrap",
+                    ),
+                    width="100%",
+                    spacing="4",
+                ),
+                
+                # Image upload section
+                rx.vstack(                    
+                    rx.hstack(
+                        rx.text(
+                            "✨ Attach images: Sensitive text detected and redacted automatically",
+                            size="2",
+                            color="blue.800",
+                            weight="bold",
+                        ),
+                                rx.menu.root(
+                                    rx.menu.trigger(
+                                        rx.icon_button(
+                                            rx.icon("image", size=16),
+                                            variant="ghost",
+                                            size="2",
+                                            color_scheme="gray",
+                                            cursor="pointer",
+                                            title="Load test images",
+                                        ),
+                                    ),
+                                    rx.menu.content(
+                                rx.vstack(
+                                    rx.foreach(
+                                        EmailPrivacyRedactorAI.available_test_images,
+                                        lambda filename, idx: rx.checkbox(
+                                            filename.replace("_Test.jpg", "").replace("_", " "),
+                                            checked=EmailPrivacyRedactorAI.selected_test_images.contains(filename),
+                                            on_change=EmailPrivacyRedactorAI.toggle_test_image_selection_by_index(idx),
+                                            cursor="pointer",
+                                        ),
+                                    ),
+                                    rx.button(
+                                        "Upload Selected",
+                                        on_click=EmailPrivacyRedactorAI.upload_selected_test_images,
+                                        size="2",
+                                        width="100%",
+                                        color_scheme="blue",
+                                        cursor="pointer",
+                                        disabled=EmailPrivacyRedactorAI.selected_test_images.length() == 0,
+                                    ),
+                                    spacing="2",
+                                    width="250px",
+                                    padding="2",
+                                ),
+                            ),
+                            open=EmailPrivacyRedactorAI.show_test_images_menu,
+                            on_open_change=EmailPrivacyRedactorAI.handle_test_images_menu_open_change,
+                        ),
+                        spacing="2",
+                        align="center",
+                    ),
+                    rx.upload(
+                        rx.button(
+                            rx.hstack(
+                                rx.icon("upload", size=16),
+                                rx.text("Upload Images"),
+                                spacing="2",
+                                align="center",
+                            ),
+                            variant="outline",
+                            width="100%",
+                            cursor="pointer",
+                        ),
+                        id="image_upload",
+                        accept={
+                            "image/png": [".png"],
+                            "image/jpeg": [".jpg", ".jpeg"],
+                            "image/gif": [".gif"],
+                        },
+                        multiple=True,
+                        on_drop=EmailPrivacyRedactorAI.handle_image_upload(rx.upload_files(upload_id="image_upload")),
+                        border="2px dashed",
+                        border_color="gray.300",
+                        border_radius="md",
+                        padding="4",
+                        width="100%",
+                    ),
+                    rx.cond(
+                        EmailPrivacyRedactorAI.image_upload_error != "",
+                        rx.text(
+                            EmailPrivacyRedactorAI.image_upload_error,
+                            size="2",
+                            font_weight="bold",
+                            style={"color": "#dc2626"},
+                        ),
+                    ),
+                    rx.cond(
+                        EmailPrivacyRedactorAI.uploaded_images.length() > 0,
+                        rx.vstack(                            
+                                rx.grid(
+                                    rx.foreach(
+                                        EmailPrivacyRedactorAI.uploaded_images,
+                                        lambda img, idx: rx.box(
+                                            rx.image(
+                                                src=f"data:image/png;base64,{img}",
+                                                max_width="150px",
+                                                max_height="150px",
+                                                width="100%",
+                                                height="auto",
+                                                border_radius="md",
+                                                object_fit="contain",
+                                                cursor="pointer",
+                                                on_click=EmailPrivacyRedactorAI.open_image_modal(idx),
+                                            ),
+                                            rx.icon_button(
+                                                rx.icon("x", size=14),
+                                                on_click=EmailPrivacyRedactorAI.remove_image(idx),
+                                                size="1",
+                                                variant="soft",
+                                                color_scheme="red",
+                                                position="absolute",
+                                                top="4px",
+                                                right="4px",
+                                            ),
+                                            position="relative",
+                                            padding="2",
+                                            border="1px solid",
+                                            border_color="gray.200",
+                                            border_radius="md",
+                                            bg="white",
+                                        ),
+                                    ),
+                                    columns="4",
+                                    spacing="3",
+                                    width="100%",
+                                ),
+                            width="100%",
+                            spacing="2",
+                        ),
+                    ),
+                    width="100%",
+                    spacing="3",
+                ),
+                
+                # Validation error message and buttons in tight container
+                rx.vstack(
+                    rx.cond(
+                        (EmailPrivacyRedactorAI.to_email_error != "") | (EmailPrivacyRedactorAI.cc_email_error != ""),
+                        rx.text(
+                            "Please, fix input errors above",
+                            size="2",
+                            font_weight="bold",
+                            style={"color": "#dc2626"},
+                        ),
+                    ),
+                    rx.hstack(
+                        rx.button(
+                            rx.icon("x", size=16),
+                            "Clear",
+                            on_click=EmailPrivacyRedactorAI.handle_new_email,
+                            variant="outline",
+                            size="3",
+                            cursor="pointer",
+                            width="auto",
+                        ),
+                        rx.button(
+                            rx.cond(
+                                EmailPrivacyRedactorAI.loading,
+                                rx.hstack(
+                                    rx.spinner(size="2"),
+                                    rx.text("Redacting with AI..."),
+                                    spacing="2",
+                                    align="center",
+                                ),
+                                rx.hstack(
+                                    rx.icon("shield", size=16),
+                                    rx.text("Preview Redacted Email"),
+                                    spacing="2",
+                                    align="center",
+                                ),
+                            ),
+                            on_click=EmailPrivacyRedactorAI.redact_text,
+                            disabled=(EmailPrivacyRedactorAI.to_email == "") | (EmailPrivacyRedactorAI.content == "") | EmailPrivacyRedactorAI.loading,
+                            size="3",
+                            flex="1",
+                            color_scheme="blue",
+                            cursor="pointer",
+                        ),
+                        width="100%",
+                        spacing="3",
+                        flex_wrap="wrap",
+                    ),
+                    width="100%",
+                    spacing="1",
+                ),
+                
+                spacing="6",
+                width="100%",
+            ),
+            max_width="80%",
+            width="80%",
+            padding="6",
+            bg="white",
+            border_radius="lg",
+            box_shadow="xl",
+            center_content=True,
+        ),
+        min_height="100vh",
+        bg="linear-gradient(to bottom right, #eff6ff, #e0e7ff)",
+        padding="4",
+        display="flex",
+        justify_content="center",
+        align_items="flex-start",
+        width="100%",
+        ),
+        # Image modal overlay - shows larger uploaded image
+        rx.cond(
+            EmailPrivacyRedactorAI.selected_image_index >= 0,
+            rx.box(
+                rx.box(
+                    rx.vstack(
+                        rx.hstack(
+                            rx.spacer(),
+                            rx.icon_button(
+                                rx.icon("x", size=20),
+                                on_click=EmailPrivacyRedactorAI.close_image_modal,
+                                variant="soft",
+                                color_scheme="gray",
+                                size="3",
+                                cursor="pointer",
+                            ),
+                            width="100%",
+                            align="end",
+                        ),
+                        rx.center(
+                            rx.cond(
+                                (EmailPrivacyRedactorAI.selected_image_index >= 0) & (EmailPrivacyRedactorAI.selected_image_index < EmailPrivacyRedactorAI.uploaded_images.length()),
+                                rx.image(
+                                    src=f"data:image/png;base64,{EmailPrivacyRedactorAI.uploaded_images[EmailPrivacyRedactorAI.selected_image_index]}",
+                                    max_width="90vw",
+                                    max_height="85vh",
+                                    object_fit="contain",
+                                    border_radius="md",
+                                    border="2px solid",
+                                    border_color="blue.300",
+                                    bg="white",
+                                ),
+                                rx.text(
+                                    "Image not available",
+                                    color="gray.500",
+                                    size="2",
+                                ),
+                            ),
+                            width="100%",
+                        ),
+                        spacing="4",
+                        width="100%",
+                    ),
+                    width="95vw",
+                    max_width="1400px",
+                    max_height="95vh",
+                    padding="6",
+                    bg="white",
+                    border_radius="lg",
+                    box_shadow="2xl",
+                    overflow_y="auto",
+                ),
+                position="fixed",
+                top="0",
+                left="0",
+                width="100%",
+                height="100%",
+                bg="rgba(0, 0, 0, 0.75)",
+                display="flex",
+                align_items="center",
+                justify_content="center",
+                z_index=1000,
+            ),
+        ),
+    )

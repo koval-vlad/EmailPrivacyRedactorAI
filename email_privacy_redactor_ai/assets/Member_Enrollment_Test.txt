@@ -1,0 +1,34 @@
+Member Enrollment & Claim Form
+
+Document ID: HC-9920-ALPHA Date: January 6, 2026
+Section A: Member Information
+
+The information below must match the subscriber's legal documentation.
+
+    Primary Member Name: Marcus V. Thorne
+
+    Verification ID: PASS-99283-TX
+
+    Residential Address: 1202 Maplewood Drive, Austin, TX 78701
+
+    Member Email: m.thorne.dev@example-corp.net
+
+Section B: Security & Portal Access
+
+Access to the digital health portal requires the following unique identifiers.
+
+    Important: Your temporary Password (Secure!Health99) and Token (auth_9k_22_v44_temp) will expire within 24 hours of document issuance.
+
+    System API Key: live_pk_8823_mvt_001
+
+    Contact Phone: +1 (512) 555-0192
+
+Section C: Billing & Financial Authorization
+
+Please provide the account details for the reimbursement of the claim.
+
+The patient has authorized a one-time payment of Amount $450.75 for services rendered. For identity verification and tax reporting, we have recorded the SSN XXX-XX-1192 on file.
+
+    Direct Deposit Account: 88100223910
+
+    Backup Payment Card: Visa **** 9901
