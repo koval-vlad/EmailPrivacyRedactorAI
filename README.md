@@ -2,7 +2,8 @@
 
 **Intelligent Email Privacy Protection with AI-Powered Text and Image Redaction**
 
-[![Demo](https://koval-vlad-portfolio.vercel.app/python/email-redactor-ai)](https://koval-vlad-portfolio.vercel.app/python/email-redactor-ai)
+- **Live Demo**: [https://koval-vlad-portfolio.vercel.app/python/email-redactor-ai](https://koval-vlad-portfolio.vercel.app/python/email-redactor-ai)
+- **Technologies**:
 [![Reflex](https://img.shields.io/badge/Built%20with-Reflex-4a154b?style=for-the-badge)](https://reflex.dev)
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python)](https://www.python.org/)
 
@@ -538,7 +539,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Support & Contact
 
-- **Live Demo**: [https://koval-vlad-portfolio.vercel.app/python/email-redactor-ai](https://koval-vlad-portfolio.vercel.app/python/email-redactor-ai)
 - **Issues**: [GitHub Issues](https://github.com/yourusername/EmailPrivacyRedactorAI/issues)
 - **Documentation**: Check this README for detailed usage instructions
 
