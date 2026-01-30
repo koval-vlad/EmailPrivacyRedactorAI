@@ -374,13 +374,20 @@ Manually finding and redacting this information is:
    USE_PRODUCTION_EMAIL=false
    ```
 
-5. **Run Development Server**:
+5. **Initialize Reflex (first time only)**:
+   On first run or after cloning, initialize the frontend (downloads Node/Bun, creates `web/`):
+   ```bash
+   reflex init
+   ```
+   This can take a few minutes on Windows. WSL is recommended for faster initial installs.
+
+6. **Run Development Server**:
    ```bash
    reflex run
    ```
    The app will be available at `http://localhost:3000`
 
-6. **Build for Production**:
+7. **Build for Production**:
    ```bash
    reflex export
    ```
@@ -475,6 +482,17 @@ Add your own test files to `email_privacy_redactor_ai/assets/`:
 ---
 
 ## 🐛 Troubleshooting
+
+### **`reflex run` doesn't work (Windows)**
+- **Run `reflex init` first**: The first time (or after a fresh clone), run `reflex init` before `reflex run`. This creates the `web/` folder and downloads frontend tooling (Bun/Node) to `%LOCALAPPDATA%\reflex` (or `$REFLEX_DIR` if set).
+- **See the actual error**: Run `reflex run --loglevel debug` to get detailed logs.
+- **Free ports**: Ensure ports **3000** (frontend) and **8000** (backend) are not in use. Change them in `rxconfig.py` (`frontend_port`, `backend_port`) or via env vars `REFLEX_FRONTEND_PORT`, `REFLEX_BACKEND_PORT` if needed.
+- **Python/venv**: Use Python 3.10+ and activate your venv: `venv\Scripts\activate` (Windows) before running reflex.
+- **WSL**: If installs are slow or fail, try running the project inside [WSL](https://docs.microsoft.com/en-us/windows/wsl/install); Reflex recommends WSL on Windows for better compatibility.
+
+### **`UNSAFE_componentWillMount` / `SideEffect(NullComponent)` warning**
+- This warning comes from **Reflex’s frontend dependency** (react-helmet), not from your app code. You can safely ignore it; it’s a deprecation notice, not a runtime error.
+- It will go away when Reflex updates to a version that uses react-helmet-async or an updated react-helmet. Until then, no change is required in this project.
 
 ### **API Key Errors**
 - Ensure `.env` file exists and contains valid API keys
