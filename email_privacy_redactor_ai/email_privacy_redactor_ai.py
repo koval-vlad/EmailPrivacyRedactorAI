@@ -1,8 +1,8 @@
 import reflex as rx
-from email_privacy_redactor_ai.components.image_file_handler import handle_image_upload as _handle_image_upload, remove_image as _remove_image
+from email_privacy_redactor_ai.components.image_file_handler import image_file_handler
 from email_privacy_redactor_ai.components.ocrspace_image_redactor import redact_image as _redact_image
-from email_privacy_redactor_ai.components.text_redactor import redact_text as _redact_text
-from email_privacy_redactor_ai.components.email_sender import send_email as _send_email
+from email_privacy_redactor_ai.components.text_redactor import text_redactor
+from email_privacy_redactor_ai.components.email_sender import email_sender
 
 
 class EmailPrivacyRedactorAI(rx.State):
@@ -196,11 +196,11 @@ class EmailPrivacyRedactorAI(rx.State):
             return
         
         # If validation passes, proceed with upload
-        await _handle_image_upload(self, files)
+        await image_file_handler.handle_upload(self, files)
     
     def remove_image(self, index: int):
         """Remove an uploaded image"""
-        _remove_image(self, index)
+        image_file_handler.remove(self, index)
         # Clear error when image is removed
         self.image_upload_error = ""
     
@@ -265,7 +265,7 @@ class EmailPrivacyRedactorAI(rx.State):
                 return
         
         # If validation passes, proceed with redaction
-        async for _ in _redact_text(self):
+        async for _ in text_redactor.redact_text(self):
             yield
     
     def handle_back(self):
@@ -282,7 +282,7 @@ class EmailPrivacyRedactorAI(rx.State):
     
     async def send_email(self):
         """Send the redacted email"""
-        await _send_email(self)
+        await email_sender.send(self)
     
     @rx.var
     def selected_image(self) -> str:
