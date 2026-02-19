@@ -5,6 +5,157 @@ from email_privacy_redactor_ai.email_privacy_redactor_ai import EmailPrivacyReda
 def email_preview_page() -> rx.Component:
     """Preview screen showing redacted content"""
     return rx.fragment(
+        rx.html(
+            """
+            <style>
+            :root {
+                color-scheme: light !important;
+                forced-color-adjust: none;
+            }
+            * {
+                forced-color-adjust: none !important;
+            }
+            body {
+                background-color: #eff6ff;
+                color: #0f172a;
+            }
+            body, .rx-Text, .rx-heading, .rx-Heading, h1, h2, h3, h4, h5, h6, label, span, small {
+                color: #0f172a !important;
+                -webkit-text-fill-color: #0f172a !important;
+            }
+            input[type="text"],
+            input[type="email"],
+            input[type="url"],
+            input[type="tel"],
+            input[type="password"],
+            textarea,
+            textarea *,
+            .rx-textarea,
+            .rx-text-area,
+            .rx-TextArea,
+            .rx-TextArea__textarea,
+            .rx-Textarea__textarea,
+            .rx-input__field,
+            .rx-text-area__field,
+            .rx-TextArea,
+            .rx-text-area {
+                color: #0f172a !important;
+                background-color: #ffffff !important;
+                border: 1px solid #d1d5db !important;
+                box-shadow: 0 0 0 1px #d1d5db inset !important;
+                border-radius: 4px !important;
+                transition: box-shadow 0.15s ease, border-color 0.15s ease;
+            }
+            input[type="text"]:focus-visible,
+            input[type="email"]:focus-visible,
+            input[type="url"]:focus-visible,
+            input[type="tel"]:focus-visible,
+            input[type="password"]:focus-visible,
+            textarea:focus-visible,
+            .rx-input__field:focus-visible,
+            .rx-text-area__field:focus-visible {
+                border-color: #2563eb !important;
+                box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25) inset !important;
+                outline: none !important;
+            }
+            input::placeholder,
+            textarea::placeholder {
+                color: #94a3b8 !important;
+            }
+            button,
+            .rx-Button__root,
+            button *,
+            .rx-Button__root * {
+                color: #ffffff !important;
+                -webkit-text-fill-color: #ffffff !important;
+                text-shadow: none !important;
+                background-color: #1d4ed8 !important;
+                border-color: #1d4ed8 !important;
+            }
+            .rx-Button__root[variant="outline"],
+            button[variant="outline"] {
+                background-color: transparent !important;
+                color: #1d4ed8 !important;
+                border-color: #1d4ed8 !important;
+            }
+            .rx-Button__root:disabled,
+            button:disabled {
+                opacity: 0.6 !important;
+            }
+            .rx-Checkbox,
+            .rx-Checkbox__control,
+            .rx-Checkbox__label {
+                background-color: #ffffff !important;
+                border: 2px solid #1d4ed8 !important;
+                box-shadow: none !important;
+            }
+            .rx-Checkbox[data-state="unchecked"] .rx-Checkbox__control,
+            .rx-Checkbox[data-state="unchecked"] .rx-Checkbox__control::before,
+            .rx-Checkbox__control::before {
+                background-color: #ffffff !important;
+            }
+            [class*="Checkbox"],
+            [class*="checkbox"] {
+                background-color: #ffffff !important;
+                border: 2px solid #1d4ed8 !important;
+                box-shadow: none !important;
+                forced-color-adjust: none !important;
+            }
+            [class*="Checkbox__control"],
+            [class*="checkbox__control"] {
+                background-color: #ffffff !important;
+                border-color: #1d4ed8 !important;
+                box-shadow: none !important;
+            }
+            [class*="Checkbox__control"]::before,
+            [class*="checkbox__control"]::before {
+                background-color: #ffffff !important;
+            }
+            .rx-Checkbox__label {
+                color: #1e3a8a !important;
+            }
+            button .rx-icon,
+            .rx-button .rx-icon,
+            .rx-Button__root .rx-icon {
+                color: #ffffff !important;
+                fill: #ffffff !important;
+            }
+            input[type="checkbox"] {
+                background-color: #ffffff !important;
+                border: 2px solid #1d4ed8 !important;
+                accent-color: #1d4ed8 !important;
+                box-shadow: none !important;
+            }
+            input[type="checkbox"]:not(:checked) {
+                background-color: #ffffff !important;
+            }
+            </style>
+            <script>
+            (() => {
+                const targets = () => [
+                    ...new Set([
+                        ...document.querySelectorAll(
+                            "textarea, .rx-textarea textarea, .rx-text-area textarea, .rx-TextArea textarea, .rx-Textarea__textarea, .rx-TextArea__textarea"
+                        ),
+                    ]),
+                };
+                const applyStyles = () => {
+                    targets().forEach((el) => {
+                        el.style.setProperty("color", "#0f172a", "important");
+                        el.style.setProperty("background-color", "#ffffff", "important");
+                        el.style.setProperty("border-color", "#d1d5db", "important");
+                        el.style.setProperty("-webkit-text-fill-color", "#0f172a", "important");
+                        el.style.setProperty("text-shadow", "none", "important");
+                    });
+                };
+                const observer = new MutationObserver(applyStyles);
+                observer.observe(document.documentElement, { attributes: true, childList: true, subtree: true });
+                document.addEventListener("DOMContentLoaded", applyStyles);
+                applyStyles();
+            })();
+            </script>
+            """
+        ),
         rx.box(
             rx.container(
             rx.vstack(
@@ -77,12 +228,15 @@ def email_preview_page() -> rx.Component:
                                 value=EmailPrivacyRedactorAI.ai_feedback,
                                 placeholder="AI feedback will appear here...",
                                 height="12rem",
-                                width="100%",
-                                read_only=True,
+                                width="100%",                                
                                 bg="gray.50",
                                 overflow_y="auto",
                                 font_family="monospace",
                                 font_size="0.875rem",
+                                style={
+                                    "color": "#0f172a !important",
+                                    "-webkit-text-fill-color": "#0f172a !important",
+                                },
                             ),
                             width="100%",
                             spacing="1",
@@ -105,6 +259,10 @@ def email_preview_page() -> rx.Component:
                                 font_family="monospace",
                                 width="100%",
                                 resize="vertical",
+                                style={
+                                    "color": "#0f172a !important",
+                                    "-webkit-text-fill-color": "#0f172a !important",
+                                },
                             ),
                             width="100%",
                             spacing="1",
@@ -129,12 +287,15 @@ def email_preview_page() -> rx.Component:
                                 value=EmailPrivacyRedactorAI.original_content,
                                 placeholder="Original content will appear here...",
                                 height="25rem",
-                                width="100%",
-                                read_only=True,
+                                width="100%",                                
                                 bg="gray.50",
                                 overflow_y="auto",
                                 font_family="monospace",
                                 font_size="0.875rem",
+                                style={
+                                    "color": "#0f172a !important",
+                                    "-webkit-text-fill-color": "#0f172a !important",
+                                },
                             ),
                             width="100%",
                             spacing="1",
@@ -223,6 +384,7 @@ def email_preview_page() -> rx.Component:
         justify_content="center",
         align_items="flex-start",
         width="100%",
+        style={"color-scheme": "light"},
         ),
         # Image modal overlay - shows redacted and original images side by side
         rx.cond(
@@ -390,8 +552,7 @@ def email_preview_page() -> rx.Component:
                                     value=EmailPrivacyRedactorAI.original_content,
                                     placeholder="Original content...",
                                     height="70vh",
-                                    width="100%",
-                                    read_only=True,
+                                    width="100%",                                    
                                     bg="gray.50",
                                     overflow_y="auto",
                                     font_family="monospace",
