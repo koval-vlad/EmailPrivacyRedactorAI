@@ -70,7 +70,7 @@ Manually finding and redacting this information is:
 
 ### 🔧 **Technical Features**
 - **Async Processing**: Non-blocking API calls for smooth user experience
-- **Multiple Email Providers**: Supports Mailpit (dev), Resend API, and SendGrid (production)
+- **Multiple Email Providers**: Supports Mailpit (dev), Resend API (primary production), and Brevo (fallback production)
 - **Base64 Image Handling**: Efficient client-side image processing
 - **OCR Integration**: Advanced text extraction from images with bounding box coordinates
 - **AI Classification**: Sophisticated prompt engineering for accurate data type detection
@@ -103,7 +103,7 @@ Manually finding and redacting this information is:
 - **Development**: [Mailpit](https://github.com/axllent/mailpit) - Local SMTP testing server
 - **Production**: 
   - **[Resend API](https://resend.com)** (Primary) - Modern email API
-  - **[SendGrid API](https://sendgrid.com)** (Fallback) - Enterprise email delivery
+  - **[Brevo](https://www.brevo.com)** (Fallback) - Transactional email delivery via the Brevo SMTP REST API
 
 ### **Core Libraries**
 - **Python 3.9+** - Main programming language
@@ -185,17 +185,18 @@ Manually finding and redacting this information is:
 }
 ```
 
-### 3. **Email APIs** (Resend / SendGrid)
+### 3. **Email APIs** (Resend / Brevo)
 
 **Resend API** (`https://api.resend.com/emails`):
 - Primary production email service
 - Modern REST API
 - Supports HTML/text emails with attachments
 
-**SendGrid API** (`https://api.sendgrid.com/v3/mail/send`):
-- Fallback email service
-- Enterprise-grade delivery
-- Automatic retry on Resend failure
+**Brevo Email API** (`https://api.brevo.com/v3/smtp/email`):
+- Fallback email service when Resend cannot deliver
+- Transactional SMTP-style REST endpoint that accepts JSON payloads with `textContent`, attachments, and custom headers
+- Supports CC recipients and Base64-encoded image attachments
+- Mirrors the Resend flow by retrying failed emails through Brevo's REST API
 
 ---
 
@@ -269,7 +270,7 @@ Manually finding and redacting this information is:
 
 ### **Step 4: Send or Go Back**
 1. **Send Email** (Click "Send Email" button):
-   - Email sent via configured service (Mailpit/Resend/SendGrid)
+   - Email sent via configured service (Mailpit/Resend/Brevo)
    - Images attached if present
    - Redirects to success page
 
@@ -333,7 +334,7 @@ Manually finding and redacting this information is:
   - [OCR.space API Key](https://ocr.space/ocrapi/freekey) (Free tier available)
   - Email service keys (optional for development):
     - [Resend API Key](https://resend.com/api-keys)
-    - [SendGrid API Key](https://app.sendgrid.com/settings/api_keys)
+    - [Brevo API Key](https://app.brevo.com/settings/api-keys)
 
 ### **Installation Steps**
 
@@ -364,8 +365,8 @@ Manually finding and redacting this information is:
    # Optional: Email services (for production)
    EMAIL_SENDER_RESEND=your_resend_email@yourdomain.com
    RESEND_API_KEY=your_resend_api_key_here
-   EMAIL_SENDER_SENDGRID=your_sendgrid_email@yourdomain.com
-   SENDGRID_API_KEY=your_sendgrid_api_key_here
+   EMAIL_SENDER_BREVO=your_brevo_email@yourdomain.com
+   BREVO_API_KEY=your_brevo_api_key_here
    
    # Development email (optional)
    EMAIL_SENDER_MAILPIT=test@example.com
@@ -435,7 +436,7 @@ EmailPrivacyRedactorAI/
 │   │   ├── image_file_handler.py        # Image upload handling
 │   │   ├── mailpit_email_sender.py      # Mailpit email sender
 │   │   ├── resend_api_email_sender.py   # Resend API integration
-│   │   ├── sendgrid_api_email_sender.py # SendGrid API integration
+│   │   ├── brevo_api_email_sender.py    # Brevo API integration
 │   │   └── ui/
 │   │       ├── checkbox_input.py        # Custom checkbox + input component
 │   │       └── auto_clear_page_button.py # Auto-clear on refresh component
@@ -506,7 +507,7 @@ Add your own test files to `email_privacy_redactor_ai/assets/`:
 
 ### **Email Sending Fails**
 - Development: Ensure Mailpit is running (if using local SMTP)
-- Production: Verify Resend/SendGrid API keys and sender email addresses
+- Production: Verify Resend/Brevo API keys and sender email addresses
 - Check email validation errors in the UI
 
 ### **Redaction Not Working**
@@ -552,7 +553,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **[Groq](https://groq.com)** for providing fast, cost-effective LLM inference
 - **[OCR.space](https://ocr.space)** for reliable OCR services
 - **[Reflex](https://reflex.dev)** for the amazing Python web framework
-- **[Resend](https://resend.com)** and **[SendGrid](https://sendgrid.com)** for email delivery services
+- **[Resend](https://resend.com)** and **[Brevo](https://www.brevo.com)** for email delivery services
 
 ---
 

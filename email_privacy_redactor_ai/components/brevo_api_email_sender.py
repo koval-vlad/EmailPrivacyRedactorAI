@@ -3,13 +3,13 @@ import base64
 import httpx
 
 
-class SendgridEmailSender:
-    """Handles SendGrid API-based email delivery (fallback production channel)."""
+class BrevoEmailSender:
+    """Handles Brevo API-based email delivery (fallback production channel)."""
 
     def __init__(self, api_key: str | None = None):
-        self.api_key = api_key or os.getenv("SENDGRID_API_KEY", "")
+        self.api_key = api_key or os.getenv("BREVO_API_KEY", "")
         if not self.api_key:
-            print("ERROR: SENDGRID_API_KEY not set")
+            print("ERROR: BREVO_API_KEY not set")
 
     @staticmethod
     def deduplicate_email_addresses(
@@ -39,53 +39,46 @@ class SendgridEmailSender:
             cleaned_to_email, cleaned_cc_email = self.deduplicate_email_addresses(
                 to_email, cc_email
             )
+            # Base email structure
             email_data = {
-                "personalizations": [
-                    {"to": [{"email": cleaned_to_email}]},
-                ],
-                "from": {"email": from_email},
+                "sender": {"email": from_email},
+                "to": [{"email": cleaned_to_email}],
                 "subject": subject,
-                "content": [
-                    {
-                        "type": "text/plain",
-                        "value": body_text,
-                    }
-                ],
+                "textContent": body_text  
             }
+
+            # Add CC if it exists
             if cleaned_cc_email:
-                email_data["personalizations"][0]["cc"] = [
-                    {"email": cleaned_cc_email}
-                ]
+                email_data["cc"] = [{"email": cleaned_cc_email}]
+
+            # Add Attachments
             if images:
                 attachments = []
                 for idx, img_b64 in enumerate(images):
-                    attachments.append(
-                        {
-                            "content": img_b64,
-                            "filename": f"image_{idx + 1}.png",
-                            "type": "image/png",
-                            "disposition": "attachment",
-                        }
-                    )
-                email_data["attachments"] = attachments
+                    attachments.append({
+                        "content": img_b64,
+                        "name": f"image_{idx + 1}.png" 
+                    })
+                email_data["attachment"] = attachments 
 
             async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.post(
-                    "https://api.sendgrid.com/v3/mail/send",
+                    "https://api.brevo.com/v3/smtp/email",
                     headers={
-                        "Authorization": f"Bearer {api_key}",
+                        "api-key": api_key,  
                         "Content-Type": "application/json",
+                        "Accept": "application/json",
                     },
                     json=email_data,
                 )
-                if response.status_code == 202:
-                    print(f"✅ Email sent successfully via SendGrid to {to_email}")
+                if response.status_code == 201:
+                    print(f"✅ Email sent successfully via Brevo to {to_email}")
                     return True
-                print(f"❌ SendGrid API error: {response.status_code} - {response.text}")
+                print(f"❌ Brevo API error: {response.status_code} - {response.text}")
                 return False
         except Exception as e:
-            print(f"❌ Error sending email via SendGrid: {e}")
+            print(f"❌ Error sending email via Brevo: {e}")
             return False
 
 
-sendgrid_email_sender = SendgridEmailSender()
+brevo_email_sender = BrevoEmailSender()

@@ -2,7 +2,7 @@ import os
 
 from email_privacy_redactor_ai.components.mailpit_email_sender import mailpit_email_sender
 from email_privacy_redactor_ai.components.resend_api_email_sender import resend_email_sender
-from email_privacy_redactor_ai.components.sendgrid_api_email_sender import sendgrid_email_sender
+from email_privacy_redactor_ai.components.brevo_api_email_sender import brevo_email_sender
 
 
 class EmailSender:
@@ -69,12 +69,12 @@ class EmailSender:
             return
 
         print(
-            "⚠️ Resend failed, trying SendGrid as fallback... from_email_resend: ",
+            "⚠️ Resend failed, trying Brevo as fallback... from_email_resend: ",
             from_email_resend,
         )
-        from_email_sendgrid = os.getenv("EMAIL_SENDER_SENDGRID", "")
-        sendgrid_success = await sendgrid_email_sender.send_email(
-            from_email=from_email_sendgrid,
+        from_email_brevo = os.getenv("EMAIL_SENDER_BREVO", "")
+        brevo_success = await brevo_email_sender.send_email(
+            from_email=from_email_brevo,
             to_email=state.to_email,
             subject=state.subject,
             body_text=state.redacted_content,
@@ -82,13 +82,13 @@ class EmailSender:
             images=state.redacted_images if state.redacted_images else None,
         )
 
-        if sendgrid_success:
-            print("✅ Email sent successfully via SendGrid (fallback)")
+        if brevo_success:
+            print("✅ Email sent successfully via Brevo (fallback)")
             state.step = "sent"
         else:
             print(
-                "❌ Both Resend and SendGrid failed. Email not sent. from_email_sendgrid: ",
-                from_email_sendgrid,
+                "❌ Both Resend and Brevo failed. Email not sent. from_email_brevo: ",
+                from_email_brevo,
             )
             state.step = "sent"
 
